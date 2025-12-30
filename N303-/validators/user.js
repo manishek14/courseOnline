@@ -8,17 +8,17 @@ const schema = {
     name : {
         type: "string",
         min: 3,
-        max: 50,
+        max: 50
     },
     userName : {
         type : "string",
         min : 5,
-        max : 255,
+        max : 255
     },
     email : {
         type : "email",
         min : 8,
-        max : 100,
+        max : 100
     },
     phoneNumber : {
         type : "string",

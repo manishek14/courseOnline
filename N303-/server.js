@@ -1,7 +1,7 @@
 require("./configs/db")
 const app = require("./app")
 const path = require ("path")
-require("dotenv").config({ path: "./N303-/.env" })
+require("dotenv").config({ path: "./.env" })
 
 console.log("PORT from env:", process.env.PORT, typeof process.env.PORT)
 const port = process.env.PORT || 3000
