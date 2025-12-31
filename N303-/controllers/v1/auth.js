@@ -2,6 +2,8 @@ const userModel = require("../../models/user")
 const registerValidator = require("../../validators/user")
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
+const path = require("path")
+require("dotenv").config(path.join("../.env"))
 
 exports.register = async (req , res) => {
     const validationResult = await registerValidator(req.body)
@@ -37,6 +39,29 @@ exports.register = async (req , res) => {
     return res.status(201).json({ user: userOBJ, accessToken })
 }
 
-exports.login = async (req , res) => {}
+exports.login = async (req , res) => {
+    const { identifire , password } = req.body
+    const user = await userModel.findOne({
+        $or : [{email : identifire} , {userName : identifire}]
+    })
+
+    if(!user){
+        return res.status(409).json({
+            message : "there is no user with this email or username"
+        })
+    }
+
+    const isValidPass = await bcrypt.compare(password , user.password)
+
+    if(!isValidPass) {
+        return res.status(409).json({message : "password is not valid"})
+    }
+
+    const accessToken = jwt.sign({id : user._id, role: user.role} , process.env.JWT_SECRET , {
+        expiresIn : "14 day"
+    })
+
+    return res.status(200).json({ accessToken })
+}
 
 exports.getMe = async (req , res) => {}
