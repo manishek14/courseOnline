@@ -64,4 +64,10 @@ exports.login = async (req , res) => {
     return res.status(200).json({ accessToken })
 }
 
-exports.getMe = async (req , res) => {}
+exports.getMe = async (req , res) => {
+    const authHeader = req.headers.authorization
+    const accessToken = authHeader?.split(" ")[1]
+    const verifyToken = jwt.verify(accessToken , process.env.JWT_SECRET)
+    const userData = await userModel.findOne({_id : verifyToken.id})
+    return res.json(userData)
+}

@@ -1,6 +1,7 @@
-const { isValidObjectId } = require("mongoose")
 const banedUserModel = require("../../models/banUser")
 const userModel = require("../../models/user")
+const bcrypt  = require("bcrypt")
+const { isValidObjectID } = require("mongoose")
 
 exports.ban = async (req , res) => {
     const mainUser = await userModel.findOne({_id : req.params.id}).lean()
@@ -16,27 +17,70 @@ exports.ban = async (req , res) => {
     return res.status(500).json({message : "Internal Server Error"})
 }
 
-exports.getAll = async (req , res) => {
-    const users = await userModel.find({}).lean()
-    const userOBJ = users.map(user => {
-        const { password, ...userWithoutPassword } = user
-        return userWithoutPassword
-    })
-    res.json(userOBJ)
+exports.changeRole = async (req , res) => {
+    const { id } = req.body
+    const isValidID = isValidObjectID(id)
+
+    if(!isValidID) {
+        return res.status(409).json({message : "userId isnt valid!"})
+    }
+
+    const user = await userModel.findOne({ _id : id})
+
+    let newRole = user.role === "ADMIN" ? "USER" : "ADMIN"
+
+    const updatedUser = await userModel.findByIdAndUpdate(
+        {_id : id},{
+            role : newRole
+        }
+    )
+
+    if(updatedUser) {
+        return res.status(200).json({message : "user role changed successfully"})
+    }
 }
 
-exports.rmUser = async (req , res) => {
-    const isValidID = await isValidObjectId(req.params.id)
-    
+exports.rmUser = async (req ,res) => {
+    const isValidID = isValidObjectID(req.params.id)
+
     if(!isValidID) {
-        return res.status(409).json({message : "user id isnt valid!"})
+        return res.status(409).json({message : "userId isnt valid!"})
     }
 
-    const removeUser = await userModel.findByIdAndDelete({ _id : req.params.id })
+    const removeUser = await userModel.findByIdAndRemove({_id : req.params.id})
 
     if(!removeUser) {
-        return res.status(404).json({message : "there isnt any user with this ID"})
+        return res.status(404).json({message : "there isnt any user with this data!"})
     }
 
-    return res.status(200).json({message : "user removed successfully"})
+    return res.json({message : "user removed successfully"})
+}
+
+exports.updateData = async (req , res) => {
+    const { username , name , email , password , phoneNumber } = req.body
+
+    const hashedPass = await bcrypt.hash(password , 12)
+
+    const user = await userModel.findByIdAndUpdate(
+        req.user.id,
+        {
+            username,
+            name,
+            email,
+            password : hashedPass,
+            phoneNumber
+        },
+        { new: true }
+    ).select("-password").lean()
+
+    if (!user) {
+        return res.status(404).json({ message: "User not found" })
+    }
+
+    return res.json(user)
+}
+
+exports.getAll = async (req , res) => {
+    const users = await userModel.find({}).lean()
+    return res.json(users)
 }
