@@ -1,16 +1,23 @@
-require("./configs/db")
-const app = require("./app")
+const connectDB = require("./configs/db")
 const path = require ("path")
 require("dotenv").config({ path: path.join(__dirname, ".env") })
 
-console.log("PORT from env:", process.env.PORT, typeof process.env.PORT)
-const port = process.env.PORT || 3000
+const startServer = async () => {
+    await connectDB();
 
-app.get("/" , (req , res) => {
-    console.log("token =>" , req.header("Authorization").split(" ")[1])
-    res.json({message : "ok"})
-})
+    const app = require("./app")
 
-app.listen(port, () => {
-    console.log(`server is running on port ${port}`)
-})
+    console.log("PORT from env:", process.env.PORT, typeof process.env.PORT)
+    const port = process.env.PORT || 3000
+
+    app.get("/" , (req , res) => {
+        console.log("token =>" , req.header("Authorization").split(" ")[1])
+        res.json({message : "ok"})
+    })
+
+    app.listen(port, () => {
+        console.log(`server is running on port ${port}`)
+    })
+}
+
+startServer();

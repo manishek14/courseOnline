@@ -11,5 +11,5 @@ const schema = new mongoose.Schema({
     },
 }, {timestamps : true})
 
-const model = mongoose.model("category" , schema)
+const model = mongoose.model("Category" , schema)
 module.exports = model

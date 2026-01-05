@@ -13,8 +13,12 @@ const schema = new mongoose.Schema({
         type : Number,
         required : true
     },
-    course :{
+    video : {
         type : String,
+        required : true
+    },
+    course :{
+        type : mongoose.Types.ObjectId,
         required : true
     }
 }, {timestamps : true})

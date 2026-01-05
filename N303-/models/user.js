@@ -30,5 +30,5 @@ const schema = new mongoose.Schema({
         default : "USER",
     }
 } , {timestamps : true})
-const model = mongoose.model("User" , schema)
+const model = mongoose.model("user" , schema)
 module.exports = model

@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const schema = new mongoose.Schema({
     name: {
-        type: String, 
+        type: String || Number, 
         required: true 
     },
     description : {
@@ -14,6 +14,8 @@ const schema = new mongoose.Schema({
         required: true     
     },
     href : {
+        type: String,
+        required: true
     },
     price : {
         type: Number, 
@@ -28,12 +30,13 @@ const schema = new mongoose.Schema({
         required: true     
     },
     categoryID : {
-        type : mongoose.Types.ObjectId 
+        type : mongoose.Types.ObjectId,
         ref : "category"
     },
     creator : {
-        type : mongoose.Types.ObjectId 
-        ref : "user"
+        type : mongoose.Types.ObjectId,
+        ref : "user",
+        // required : true
     }
   },
   { timestamps: true }
@@ -42,7 +45,9 @@ const schema = new mongoose.Schema({
 schema.virtual("session" , {
     ref : "session",
     localField : "_id",
-    foreginField : "course"
+    foreignField : "course"
 })
 
 const model = mongoose.model("Course" , schema)
+
+module.exports = model;

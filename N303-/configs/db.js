@@ -1,10 +1,14 @@
 const { connect } = require("mongoose")
-require("dotenv").config({ path: "./.env" })
+require("dotenv").config({ path: "../.env" })
 
-const run = async () => {
-  await connect("mongodb://localhost:27017/courseOnline");
-  console.log("Connected to myDB");
+const connectDB = async () => {
+  try {
+    await connect("mongodb://localhost:27017/courseOnline");
+    console.log("Connected to myDB");
+  } catch (err) {
+    console.error(err);
+    process.exit(1);
+  }
 }
 
-run()
-.catch((err) => console.error(err))
+module.exports = connectDB;
