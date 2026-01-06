@@ -54,3 +54,27 @@ exports.getSessions = async (req, res) => {
 
   return res.json({ sessions });
 };
+
+exports.getAllSessionInfo = async (req , res) => {
+  const course = await courseModel.findOne({href : req.params.herf}).lean()
+
+  const session = await sessionModel.findOne({_id : req.params.sessionID})
+
+  const sessions = await sessionModel.find({course : course._id})
+
+  return res.json({ session , sessions })
+}
+
+exports.rmSession = async (req , res) => {
+  const { id } = req.params
+
+  const isSession = await sessionModel.find({_id : id}).lean()
+
+  if(isSession) {
+    const deleteSession = await sessionModel.findOneAndDelete({_id : id})
+    return res.json({message : "the session removed successfully."})
+  } else {
+    return res.status(404).json({message : "this id isnt valid"})
+  }
+}
+

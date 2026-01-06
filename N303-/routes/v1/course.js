@@ -15,4 +15,10 @@ router
   .get(controller.getSessions)
   .post(uploader.single("video"), authMiddle.authenticate, isAdminMiddle, controller.createSession);
 
+router
+  .route("/:herf/:sessionID")
+  .get(authMiddle.authenticate , isAdminMiddle , controller.getAllSessionInfo)
+
+router.route("/session/:id").delete(authMiddle.authenticate , isAdminMiddle , controller.rmSession)
+
 module.exports = router;

@@ -1,6 +1,5 @@
+require("dotenv").config({ path: require("path").join(__dirname, ".env") })
 const connectDB = require("./configs/db")
-const path = require ("path")
-require("dotenv").config({ path: path.join(__dirname, ".env") })
 
 const startServer = async () => {
     await connectDB();
