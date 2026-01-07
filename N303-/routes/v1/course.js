@@ -8,12 +8,12 @@ const router = express.Router();
 
 router
   .route("/")
-  .post(uploader.single("cover") ,authMiddle.authenticate, isAdminMiddle, controller.create);
+  .post(uploader.fields([{name: 'cover'}, {name: 'video'}]) ,authMiddle.authenticate, isAdminMiddle, controller.create);
 
 router
   .route("/:id/session")
   .get(controller.getSessions)
-  .post(uploader.single("video"), authMiddle.authenticate, isAdminMiddle, controller.createSession);
+  .post(uploader.fields([{name: 'video'}]), authMiddle.authenticate, isAdminMiddle, controller.createSession);
 
 router
   .route("/:herf/:sessionID")

@@ -26,9 +26,8 @@ const schema = new mongoose.Schema({
     mainComment : {
         type : mongoose.Types.ObjectId,
         ref : "comment",
-        required : true
     }
 },{timestamps : true})
 
-const model = mongoose.model("comment" , schema)
+const model = mongoose.model("comments" , schema)
 module.exports = model

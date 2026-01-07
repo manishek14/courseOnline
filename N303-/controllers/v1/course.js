@@ -2,6 +2,10 @@ const courseModel = require("../../models/course");
 const sessionModel = require("../../models/session");
 
 exports.create = async (req, res) => {
+  if (!req.files.cover || req.files.cover.length === 0) {
+    return res.status(400).json({ error: 'Cover file is required' });
+  }
+
   const {
     name,
     description,
@@ -22,7 +26,7 @@ exports.create = async (req, res) => {
     discount,
     categoryID,
     creator: req.user._id,
-    cover: req.file.filename,
+    cover: req.files.cover[0].filename,
   });
 
   const mainCourse = await courseModel
@@ -33,6 +37,10 @@ exports.create = async (req, res) => {
 };
 
 exports.createSession = async (req, res) => {
+  if (!req.files.video || req.files.video.length === 0) {
+    return res.status(400).json({ error: 'Video file is required' });
+  }
+
   const { title, time, free } = req.body;
   const { id } = req.params;
 
@@ -40,7 +48,7 @@ exports.createSession = async (req, res) => {
     title,
     time,
     free,
-    video: req.file.filename,
+    video: req.files.video[0].filename,
     course: id,
   });
 
