@@ -1,5 +1,6 @@
 const banedUserModel = require("../../models/banUser")
 const userModel = require("../../models/user")
+
 const bcrypt  = require("bcrypt")
 const { isValidObjectID } = require("mongoose")
 
@@ -84,3 +85,4 @@ exports.getAll = async (req , res) => {
     const users = await userModel.find({}).lean()
     return res.json(users)
 }
+

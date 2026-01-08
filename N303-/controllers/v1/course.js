@@ -1,5 +1,6 @@
 const courseModel = require("../../models/course");
 const sessionModel = require("../../models/session");
+const categoryModel = require("../../models/category")
 
 exports.create = async (req, res) => {
   if (!req.files.cover || req.files.cover.length === 0) {
@@ -64,9 +65,13 @@ exports.getSessions = async (req, res) => {
 };
 
 exports.getAllSessionInfo = async (req , res) => {
-  const course = await courseModel.findOne({href : req.params.herf}).lean()
+  const course = await courseModel.findOne({href : req.params.href}).lean()
 
-  const session = await sessionModel.findOne({_id : req.params.sessionID})
+  if (!course) {
+    return res.status(404).json({ message: "Course not found" })
+  }
+
+  const session = await sessionModel.findOne({title : req.params.sessionID})
 
   const sessions = await sessionModel.find({course : course._id})
 
@@ -83,6 +88,19 @@ exports.rmSession = async (req , res) => {
     return res.json({message : "the session removed successfully."})
   } else {
     return res.status(404).json({message : "this id isnt valid"})
+  }
+}
+
+exports.getCourses = async (req, res) => {
+  const { href } = req.params
+  const category = await categoryModel.findOne({ href })
+
+  if(category) {
+    const categoryCourses = await courseModel.find({categoryID : category._id})
+
+    return res.json(categoryCourses)
+  } else{
+    return res.status(404).json({message : "category not found"})
   }
 }
 

@@ -15,8 +15,10 @@ router
   .get(controller.getSessions)
   .post(uploader.fields([{name: 'video'}]), authMiddle.authenticate, isAdminMiddle, controller.createSession);
 
+router.route("/category/:href").get(controller.getCourses)
+
 router
-  .route("/:herf/:sessionID")
+  .route("/:href/:sessionID")
   .get(authMiddle.authenticate , isAdminMiddle , controller.getAllSessionInfo)
 
 router.route("/session/:id").delete(authMiddle.authenticate , isAdminMiddle , controller.rmSession)
